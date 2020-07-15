@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/felixcatto/eruption/issues"
   },
-  "homepage": "https://github.com/felixcatto/eruption#readme"
+  "homepage": "https://github.com/felixcatto/eruption#readme",
+  "devDependencies": {
+    "del": "^5.1.0",
+    "gulp": "^4.0.2"
+  }
 }
