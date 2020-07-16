@@ -1,5 +1,6 @@
 const path = require('path');
 const { merge } = require('webpack-merge');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const common = {
   output: {
@@ -15,7 +16,33 @@ const common = {
           loader: 'babel-loader',
         },
       },
+      {
+        test: /module\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader', options: { modules: true } },
+          'sass-loader',
+        ],
+      },
+      {
+        test: /(?<!module)\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader',
+        ],
+      },
     ],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+    }),
+  ],
+  stats: {
+    warnings: false,
+    children: false,
+    modules: false,
   },
 };
 

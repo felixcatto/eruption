@@ -17,10 +17,16 @@ const serve = new Serve({
   static: [path.resolve(__dirname, 'dist'), path.resolve(__dirname, 'dist/public')],
   hmr: false,
   liveReload: true,
+  client: {
+    silent: true,
+  },
 });
 
-// need 2 compilers - dev and prod without plugins
-const compiler = webpack({ ...webpackConfig, plugins: [serve] });
+if (process.env.NODE_ENV !== 'production') {
+  webpackConfig.plugins = (webpackConfig.plugins || []).concat(serve);
+}
+
+const compiler = webpack(webpackConfig);
 
 const startDevServer = done => compiler.watch({}, done);
 
@@ -40,7 +46,9 @@ const watch = () => {
 };
 
 const dev = gulp.series(clean, copyLayout, startDevServer, watch);
+const prod = gulp.series(clean, copyLayout, bundleClientJs);
 
 module.exports = {
   dev,
+  prod,
 };
