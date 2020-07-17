@@ -1,8 +1,19 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import '~@fortawesome/fontawesome-free/css/all.css';
+@import './scssHelpers.scss';
 
 body {
-  background: steelblue;
-  color: #fff;
   font-family: 'Comic Sans MS', 'ubuntu';
+  background-image: url('/img/v1.jpg');
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.app {
+  &__container {
+    min-height: 100vh;
+    background: #fff;
+    box-shadow: inset 12px 0 25px -15px rgba(0, 0, 0, 0.9), inset -12px 0 25px -15px rgba(0, 0, 0, 0.9);
+  }
 }

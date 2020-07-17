@@ -10,6 +10,10 @@ const paths = {
     src: 'index.html',
     dest: 'dist/public',
   },
+  img: {
+    src: 'public/img/**/*',
+    dest: 'dist/public/img',
+  },
 };
 
 const serve = new Serve({
@@ -39,14 +43,16 @@ const clean = () => del(['dist']);
 
 const copyLayout = () => gulp.src(paths.layout.src).pipe(gulp.dest(paths.layout.dest));
 
+const copyMisc = () => gulp.src(paths.img.src).pipe(gulp.dest(paths.img.dest));
+
 const bundleClientJs = done => compiler.run(done);
 
 const watch = () => {
   gulp.watch(paths.layout.src, gulp.series(copyLayout, reloadDevServer));
 };
 
-const dev = gulp.series(clean, copyLayout, startDevServer, watch);
-const prod = gulp.series(clean, copyLayout, bundleClientJs);
+const dev = gulp.series(clean, copyLayout, copyMisc, startDevServer, watch);
+const prod = gulp.series(clean, copyLayout, copyMisc, bundleClientJs);
 
 module.exports = {
   dev,
