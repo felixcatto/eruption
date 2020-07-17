@@ -8,13 +8,13 @@ const webpackConfig = require('./webpack.config.js');
 const paths = {
   layout: {
     src: 'index.html',
-    dest: 'dist',
+    dest: 'dist/public',
   },
 };
 
 const serve = new Serve({
   port: 3000,
-  static: [path.resolve(__dirname, 'dist'), path.resolve(__dirname, 'dist/public')],
+  static: [webpackConfig.output.path],
   hmr: false,
   liveReload: true,
   client: {

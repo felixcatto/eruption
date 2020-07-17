@@ -26,11 +26,18 @@ const common = {
       },
       {
         test: /(?<!module)\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader',
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(ttf|eot|woff|woff2|svg)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'font',
+            publicPath: '../font',
+          },
+        },
       },
     ],
   },

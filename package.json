@@ -37,6 +37,7 @@
     "webpack-plugin-serve": "^1.0.1"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.14.0",
     "bootstrap": "^4.5.0"
   }
 }
