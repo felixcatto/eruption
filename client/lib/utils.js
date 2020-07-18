@@ -33,3 +33,17 @@ export const getTodos = ms =>
   new Promise((resolve, reject) => {
     setTimeout(() => resolve(todosFromApi), ms);
   });
+
+export const makeEnum = args =>
+  new Proxy(
+    args.reduce((acc, key) => ({ ...acc, [key]: key }), {}),
+    {
+      get(target, key) {
+        if (target.hasOwnProperty(key)) {
+          return target[key];
+        } else {
+          throw new Error(`There is no key [${key}] in enum`);
+        }
+      },
+    }
+  );

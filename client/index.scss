@@ -2,7 +2,7 @@
 // @import '~@fortawesome/fontawesome-free/css/all.css';
 @import '~@fortawesome/fontawesome-free/css/fontawesome.min.css';
 @import '~@fortawesome/fontawesome-free/css/solid.min.css';
-@import './scssHelpers.scss';
+@import './lib/scssHelpers.scss';
 
 body {
   font-family: 'Comic Sans MS', 'ubuntu';
@@ -33,13 +33,28 @@ body {
 
 // spinner START
 $offset: 187;
+$offsetBold: 180;
 $duration: 1.8s;
 
 .spinner {
+  width: 25px;
+  height: 25px;
   animation: rotator $duration linear infinite;
-  &_usual {
-    width: 25px;
-    height: 25px;
+  &__path {
+    stroke-dasharray: $offset;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: dash $duration ease-in-out infinite;
+    stroke: steelblue;
+    fill: none;
+    stroke-linecap: round;
+    r: 30;
+    stroke-width: 6;
+    &_bold {
+      r: 24;
+      stroke-width: 9;
+      animation: dashbold $duration ease-in-out infinite;
+    }
   }
 }
 
@@ -52,14 +67,6 @@ $duration: 1.8s;
   }
 }
 
-.path {
-  stroke-dasharray: $offset;
-  stroke-dashoffset: 0;
-  transform-origin: center;
-  stroke: steelblue;
-  animation: dash $duration ease-in-out infinite;
-}
-
 @keyframes dash {
   0% {
     stroke-dashoffset: $offset;
@@ -70,6 +77,20 @@ $duration: 1.8s;
   }
   100% {
     stroke-dashoffset: $offset;
+    transform: rotate(450deg);
+  }
+}
+
+@keyframes dashbold {
+  0% {
+    stroke-dashoffset: $offsetBold;
+  }
+  50% {
+    stroke-dashoffset: $offsetBold/4;
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: $offsetBold;
     transform: rotate(450deg);
   }
 }
