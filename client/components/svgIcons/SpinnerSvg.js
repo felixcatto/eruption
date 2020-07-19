@@ -3,7 +3,6 @@ import cn from 'classnames';
 
 const SpinnerSvg = props => {
   const { className, modifier } = props;
-  const getModifier = () => {};
   const svgClass = cn('spinner', className, {
     [`spinner_${modifier}`]: modifier,
   });

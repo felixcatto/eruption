@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { uniqueId } from 'lodash';
 
 const todosFromApi = [
@@ -30,7 +30,7 @@ export const useMergedState = initialState => {
 };
 
 export const getTodos = ms =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     setTimeout(() => resolve(todosFromApi), ms);
   });
 
@@ -39,11 +39,10 @@ export const makeEnum = args =>
     args.reduce((acc, key) => ({ ...acc, [key]: key }), {}),
     {
       get(target, key) {
-        if (target.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(target, key)) {
           return target[key];
-        } else {
-          throw new Error(`There is no key [${key}] in enum`);
         }
+        throw new Error(`There is no key [${key}] in enum`);
       },
     }
   );

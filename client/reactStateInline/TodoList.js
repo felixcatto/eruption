@@ -1,15 +1,15 @@
-import { SpinnerSvg } from '../components/svgIcons';
 import React, { useEffect } from 'react';
 import cn from 'classnames';
-import { useMergedState, getTodos, makeEnum } from '../lib/utils.js';
-import s from './TodoList.module.scss';
 import { Formik, Field, Form } from 'formik';
 import { uniqueId } from 'lodash';
+import { useMergedState, getTodos, makeEnum } from '../lib/utils';
+import s from './TodoList.module.scss';
+import { SpinnerSvg } from '../components/svgIcons';
 
 const filterStates = makeEnum(['all', 'completed', 'incomplete']);
 const todoListStates = makeEnum(['idle', 'loading', 'success']);
 
-const TodoList = props => {
+const TodoList = () => {
   const [state, setState] = useMergedState({
     todoList: [],
     todoListState: todoListStates.idle,
@@ -20,7 +20,9 @@ const TodoList = props => {
 
   useEffect(() => {
     setState({ todoListState: todoListStates.loading });
-    getTodos(2000).then(todoList => setState({ todoList, todoListState: todoListStates.success }));
+    getTodos(2000).then(items =>
+      setState({ todoList: items, todoListState: todoListStates.success })
+    );
   }, []);
 
   let filterTodoFunc;

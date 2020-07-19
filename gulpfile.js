@@ -1,6 +1,5 @@
 const gulp = require('gulp');
 const del = require('del');
-const path = require('path');
 const webpack = require('webpack');
 const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
 const webpackConfig = require('./webpack.config.js');
