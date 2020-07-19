@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import cn from 'classnames';
 import { useMergedState, getTodos, makeEnum } from '../lib/utils.js';
 import s from './TodoList.module.scss';
-import { useFormik } from 'formik';
+import { Formik, Field, Form } from 'formik';
 
 const filterStates = makeEnum(['all', 'completed', 'incomplete']);
 const todoListStates = makeEnum(['idle', 'loading', 'success']);
@@ -16,13 +16,6 @@ const TodoList = props => {
   });
   const { filterState, todoListState, todoList } = state;
   console.log(state);
-
-  const formik = useFormik({
-    initialValues: { newTodoText: '' },
-    onSubmit: values => {
-      console.log(values);
-    },
-  });
 
   useEffect(() => {
     setState({ todoListState: todoListStates.loading });
@@ -59,16 +52,23 @@ const TodoList = props => {
   return (
     <div className="row">
       <div className="col-6">
-        <form className="d-flex mb-20" onSubmit={formik.handleSubmit}>
-          <input
-            type="text"
-            className="form-control form-control__inline mr-20"
-            {...formik.getFieldProps('newTodoText')}
-          />
-          <button className="btn btn-primary" type="submit">
-            Add ToDo
-          </button>
-        </form>
+        <Formik
+          initialValues={{ newTodoText: '' }}
+          onSubmit={values => {
+            console.log(values);
+          }}
+        >
+          <Form className="d-flex mb-20">
+            <Field
+              type="text"
+              className="form-control form-control__inline mr-20"
+              name="newTodoText"
+            />
+            <button className="btn btn-primary" type="submit">
+              Add ToDo
+            </button>
+          </Form>
+        </Formik>
         <div className="mb-15">
           {todoListState === todoListStates.loading ? (
             <SpinnerSvg modifier="bold" />
