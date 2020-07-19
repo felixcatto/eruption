@@ -21,6 +21,7 @@ const serve = new Serve({
   static: [webpackConfig.output.path],
   hmr: false,
   liveReload: true,
+  historyFallback: true,
   client: {
     silent: true,
   },

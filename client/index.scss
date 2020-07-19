@@ -19,6 +19,28 @@ body {
     box-shadow: inset 12px 0 25px -15px rgba(0, 0, 0, 0.9),
       inset -12px 0 25px -15px rgba(0, 0, 0, 0.9);
   }
+  &__root-link {
+    color: #212529;
+    &:hover {
+      text-decoration: none;
+      color: #212529;
+    }
+  }
+  &__nav-link {
+    &_active {
+      color: #212529;
+      &:hover {
+        text-decoration: none;
+        color: #212529;
+        cursor: default;
+      }
+    }
+  }
+  &__splash-screen {
+    display: block;
+    width: 100%;
+    border-radius: 10px;
+  }
 }
 
 .form-control {

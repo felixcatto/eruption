@@ -4,6 +4,7 @@ import cn from 'classnames';
 import { useMergedState, getTodos, makeEnum } from '../lib/utils.js';
 import s from './TodoList.module.scss';
 import { Formik, Field, Form } from 'formik';
+import { uniqueId } from 'lodash';
 
 const filterStates = makeEnum(['all', 'completed', 'incomplete']);
 const todoListStates = makeEnum(['idle', 'loading', 'success']);
@@ -48,16 +49,21 @@ const TodoList = props => {
     todo.isCompleted = !todo.isCompleted;
     setState({ todoList });
   };
+  const addNewTodo = (values, fm) => {
+    fm.resetForm();
+    setState({
+      todoList: todoList.concat({
+        id: uniqueId(),
+        text: values.newTodoText,
+        isCompleted: false,
+      }),
+    });
+  };
 
   return (
     <div className="row">
       <div className="col-6">
-        <Formik
-          initialValues={{ newTodoText: '' }}
-          onSubmit={values => {
-            console.log(values);
-          }}
-        >
+        <Formik initialValues={{ newTodoText: '' }} onSubmit={addNewTodo}>
           <Form className="d-flex mb-20">
             <Field
               type="text"
@@ -74,9 +80,11 @@ const TodoList = props => {
             <SpinnerSvg modifier="bold" />
           ) : (
             filteredTodos.map(todo => (
-              <div key={todo.id} className={s.todoRow} onClick={changeTodoStatus(todo.id)}>
-                <i className={todoClass(todo)}></i>
-                <div>{todo.text}</div>
+              <div key={todo.id}>
+                <div className={s.todoRow} onClick={changeTodoStatus(todo.id)}>
+                  <i className={todoClass(todo)}></i>
+                  <div>{todo.text}</div>
+                </div>
               </div>
             ))
           )}
