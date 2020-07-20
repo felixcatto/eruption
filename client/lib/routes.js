@@ -7,4 +7,5 @@ export default {
   reatom: '/reatom',
   storeon: '/storeon',
   effector: '/effector',
+  mobx: '/mobx',
 };

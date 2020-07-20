@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { uniqueId } from 'lodash';
+import { Link } from '@reach/router';
 
 const todosFromApi = [
   {
@@ -46,3 +47,8 @@ export const makeEnum = args =>
       },
     }
   );
+
+export const NavLink = ({ activeClassName, ...restProps }) => {
+  const isActive = ({ isCurrent }) => (isCurrent ? { className: activeClassName } : {});
+  return <Link getProps={isActive} {...restProps} />;
+};
