@@ -1,25 +1,18 @@
 import React, { useEffect } from 'react';
 import cn from 'classnames';
 import { Formik, Field, Form } from 'formik';
-import { uniqueId } from 'lodash';
-import { useMergedState, getTodos, filterStates, todoListStates } from '../lib/utils';
-import s from './TodoList.module.scss';
+import { filterStates, todoListStates } from '../lib/utils';
+import s from '../reactStateInline/TodoList.module.scss';
 import { SpinnerSvg } from '../components/svgIcons';
 
-const TodoList = () => {
-  const [state, setState] = useMergedState({
-    todoList: [],
-    todoListState: todoListStates.idle,
-    filterState: filterStates.all,
-  });
-  const { filterState, todoListState, todoList } = state;
-  console.log(state);
+const TodoList = props => {
+  const { filterState, todoListState, todoList } = props;
+  console.log(props);
 
   useEffect(() => {
-    setState({ todoListState: todoListStates.loading });
-    getTodos(2000).then(items =>
-      setState({ todoList: items, todoListState: todoListStates.success })
-    );
+    if (todoListState === todoListStates.idle) {
+      props.loadTodos(2000);
+    }
   }, []);
 
   let filterTodoFunc;
@@ -43,21 +36,11 @@ const TodoList = () => {
       'fa-dove': !todo.isCompleted,
     });
 
-  const changeFilter = filterButtonState => () => setState({ filterState: filterButtonState });
-  const changeTodoStatus = id => () => {
-    const todo = todoList.find(el => el.id === id);
-    todo.isCompleted = !todo.isCompleted;
-    setState({ todoList });
-  };
+  const changeFilter = filterButtonState => () => props.setTodosVisibility(filterButtonState);
+  const changeTodoStatus = id => () => props.changeTodoStatus(id);
   const addNewTodo = (values, fm) => {
     fm.resetForm();
-    setState({
-      todoList: todoList.concat({
-        id: uniqueId(),
-        text: values.newTodoText,
-        isCompleted: false,
-      }),
-    });
+    props.addNewTodo(values.newTodoText);
   };
 
   return (
@@ -89,9 +72,7 @@ const TodoList = () => {
             ))
           )}
         </div>
-        <div className="mb-5">
-          Count: {todoItemsCount}
-        </div>
+        <div className="mb-5">Count: {todoItemsCount}</div>
         <div className="d-flex">
           <div
             className={cn(filterButtonClass(filterStates.all), 'mr-15')}

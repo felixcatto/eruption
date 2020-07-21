@@ -52,3 +52,6 @@ export const NavLink = ({ activeClassName, ...restProps }) => {
   const isActive = ({ isCurrent }) => (isCurrent ? { className: activeClassName } : {});
   return <Link getProps={isActive} {...restProps} />;
 };
+
+export const filterStates = makeEnum(['all', 'completed', 'incomplete']);
+export const todoListStates = makeEnum(['idle', 'loading', 'success']);
