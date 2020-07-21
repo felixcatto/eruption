@@ -34,6 +34,7 @@ const TodoList = () => {
     filterTodoFunc = todo => todo.isCompleted;
   }
   const filteredTodos = todoList.filter(filterTodoFunc);
+  const todoItemsCount = filteredTodos.length;
 
   const filterButtonClass = filterButtonState =>
     cn(s.filterButton, {
@@ -90,6 +91,9 @@ const TodoList = () => {
               </div>
             ))
           )}
+        </div>
+        <div className="mb-5">
+          Count: {todoItemsCount}
         </div>
         <div className="d-flex">
           <div

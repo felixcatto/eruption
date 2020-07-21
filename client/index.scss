@@ -41,6 +41,13 @@ body {
     width: 100%;
     border-radius: 10px;
   }
+  &__counter {
+    display: block;
+    background: steelblue;
+    color: #fff;
+    border-radius: 10px;
+    padding: 2px 5px;
+  }
 }
 
 .form-control {
@@ -51,6 +58,11 @@ body {
 
 .fa {
   color: steelblue;
+}
+
+.clickable {
+  cursor: pointer;
+  user-select: none;
 }
 
 // spinner START
