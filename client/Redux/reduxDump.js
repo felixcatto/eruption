@@ -12,7 +12,7 @@ export const changeTodoStatus = todoId => ({
   id: todoId,
 });
 
-export const setTodosVisibility = filterState => ({
+export const changeFilter = filterState => ({
   type: 'TODOS_SET_VISIBILITY',
   filterState,
 });
