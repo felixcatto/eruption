@@ -4,6 +4,7 @@ import { Router, Link } from '@reach/router';
 import ReactStateInline from './reactStateInline/TodoList';
 import ReactStateContext from './reactStateContext/RSCApp';
 import Redux from './Redux/ReduxApp';
+import ReduxToolkit from './ReduxToolkit/ReduxToolkitApp';
 import './index.scss';
 import routes from './lib/routes';
 import { NavLink } from './lib/utils';
@@ -64,7 +65,7 @@ const App = () => {
         <ReactStateInline path={routes.reactStateInline} />
         <ReactStateContext path={routes.reactStateContext} />
         <Redux path={routes.redux} />
-        <Stab path={routes.reduxToolkit} />
+        <ReduxToolkit path={routes.reduxToolkit} />
         <Stab path={routes.storeon} />
         <Stab path={routes.reatom} />
         <Stab path={routes.effector} />

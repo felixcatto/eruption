@@ -1,6 +1,3 @@
-import thunkMiddleware from 'redux-thunk';
-import { createLogger } from 'redux-logger';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { uniqueId } from 'lodash';
 import { getTodos, filterStates, todoListStates } from '../lib/utils';
 
@@ -27,7 +24,7 @@ export const loadTodos = ms => async dispatch => {
 };
 
 // reducers
-const todoListReducer = (state = [], action) => {
+export const todoListReducer = (state = [], action) => {
   switch (action.type) {
     case 'TODO_ADD':
       return [
@@ -49,7 +46,7 @@ const todoListReducer = (state = [], action) => {
   }
 };
 
-const todoListStateReducer = (state = todoListStates.idle, action) => {
+export const todoListStateReducer = (state = todoListStates.idle, action) => {
   switch (action.type) {
     case 'TODOS_LOAD_REQUEST':
       return todoListStates.loading;
@@ -60,7 +57,7 @@ const todoListStateReducer = (state = todoListStates.idle, action) => {
   }
 };
 
-const filterStateReducer = (state = filterStates.all, action) => {
+export const filterStateReducer = (state = filterStates.all, action) => {
   switch (action.type) {
     case 'TODOS_SET_VISIBILITY':
       return action.filterState;
@@ -68,11 +65,3 @@ const filterStateReducer = (state = filterStates.all, action) => {
       return state;
   }
 };
-
-const rootReducer = combineReducers({
-  todoList: todoListReducer,
-  todoListState: todoListStateReducer,
-  filterState: filterStateReducer,
-});
-
-export const store = createStore(rootReducer, applyMiddleware(thunkMiddleware, createLogger()));
