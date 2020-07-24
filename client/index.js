@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { render } from 'react-dom';
 import { Router, Link } from '@reach/router';
-import ReactStateInline from './reactStateInline/TodoList';
+import RSInline from './reactStateInline/TodoList';
 import ReactStateContext from './reactStateContext/RSCApp';
 import Redux from './Redux/ReduxApp';
 import ReduxToolkit from './ReduxToolkit/ReduxToolkitApp';
+import Storeon from './storeon/StoreonApp';
 import './index.scss';
 import routes from './lib/routes';
 import { NavLink } from './lib/utils';
 
 const Home = () => <img src="/img/v2.jpg" className="app__splash-screen" />;
 const Stab = () => <div>To be done</div>;
+const ReactStateInline = () => <RSInline />;
 
 const App = () => {
   const [state, setState] = useState({ iprop: 0 });
@@ -66,7 +68,7 @@ const App = () => {
         <ReactStateContext path={routes.reactStateContext} />
         <Redux path={routes.redux} />
         <ReduxToolkit path={routes.reduxToolkit} />
-        <Stab path={routes.storeon} />
+        <Storeon path={routes.storeon} />
         <Stab path={routes.reatom} />
         <Stab path={routes.effector} />
         <Stab path={routes.mobx} />
