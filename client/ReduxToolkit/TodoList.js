@@ -14,7 +14,6 @@ const todoListSelector = createSelector(
 const TodoList = () => {
   const { filterState, todoListState, todoList } = useSelector(todoListSelector);
   const dispatch = useDispatch();
-  const bindDispatch = actionCreator => payload => dispatch(actionCreator(payload));
   console.log({ todoList, todoListState, filterState });
 
   return (
@@ -22,10 +21,10 @@ const TodoList = () => {
       filterState={filterState}
       todoListState={todoListState}
       todoList={todoList}
-      loadTodos={bindDispatch(loadTodos)}
-      changeFilter={bindDispatch(changeFilter)}
-      changeTodoStatus={bindDispatch(changeTodoStatus)}
-      addNewTodo={bindDispatch(addNewTodo)}
+      loadTodos={payload => dispatch(loadTodos(payload))}
+      changeFilter={payload => dispatch(changeFilter(payload))}
+      changeTodoStatus={payload => dispatch(changeTodoStatus(payload))}
+      addNewTodo={payload => dispatch(addNewTodo(payload))}
     />
   );
 };

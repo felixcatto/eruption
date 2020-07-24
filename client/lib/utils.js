@@ -48,6 +48,25 @@ export const makeEnum = args =>
     }
   );
 
+export const makeActions = actionStrings => {
+  const actions = actionStrings.reduce((acc, actionString) => {
+    const [, action] = actionString.split('/');
+    return {
+      ...acc,
+      [action]: actionString,
+    };
+  }, {});
+
+  return new Proxy(actions, {
+    get(target, key) {
+      if (Object.prototype.hasOwnProperty.call(target, key)) {
+        return target[key];
+      }
+      throw new Error(`There is no key [${key}] in enum`);
+    },
+  });
+};
+
 export const NavLink = ({ activeClassName, ...restProps }) => {
   const isActive = ({ isCurrent }) => (isCurrent ? { className: activeClassName } : {});
   return <Link getProps={isActive} {...restProps} />;

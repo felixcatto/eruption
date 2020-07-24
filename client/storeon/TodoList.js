@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStoreon } from 'storeon/react';
 import CommonTodoList from '../components/CommonTodoList';
-import { loadTodos } from './todolistSlice';
+import { loadTodos, actions } from './todolistSlice';
 
 const TodoList = () => {
   const { dispatch, todoList, todoListState, filterState } = useStoreon(
@@ -17,9 +17,9 @@ const TodoList = () => {
       todoListState={todoListState}
       todoList={todoList}
       loadTodos={payload => loadTodos(payload)(dispatch)}
-      changeFilter={payload => dispatch('filterState/changeFilter', payload)}
-      changeTodoStatus={payload => dispatch('todoList/changeTodoStatus', payload)}
-      addNewTodo={payload => dispatch('todoList/addNewTodo', payload)}
+      changeFilter={payload => dispatch(actions.changeFilter, payload)}
+      changeTodoStatus={payload => dispatch(actions.changeTodoStatus, payload)}
+      addNewTodo={payload => dispatch(actions.addNewTodo, payload)}
     />
   );
 };
