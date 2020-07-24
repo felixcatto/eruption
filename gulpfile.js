@@ -47,8 +47,17 @@ const copyMisc = () => gulp.src(paths.img.src).pipe(gulp.dest(paths.img.dest));
 
 const bundleClientJs = done => compiler.run(done);
 
+const trackChangesInDist = () => {
+  const watcher = gulp.watch(['dist/**/*']);
+  watcher
+    .on('add', path => console.log(`File ${path} was added`))
+    .on('change', path => console.log(`File ${path} was changed`))
+    .on('unlink', path => console.log(`File ${path} was removed`));
+};
+
 const watch = () => {
   gulp.watch(paths.layout.src, gulp.series(copyLayout, reloadDevServer));
+  trackChangesInDist();
 };
 
 const dev = gulp.series(clean, copyLayout, copyMisc, startDevServer, watch);
