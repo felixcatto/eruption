@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { uniqueId } from 'lodash';
+import { uniqueId, isFunction } from 'lodash';
+import produce from 'immer';
 import { Link } from '@reach/router';
 
 const todosFromApi = [
@@ -28,6 +29,23 @@ export const useMergedState = initialState => {
       ...newState,
     });
   return [state, setMergedState];
+};
+
+export const useImmerState = initialState => {
+  const [state, setState] = useState(initialState);
+  const setImmerState = fnOrObject => {
+    if (isFunction(fnOrObject)) {
+      const fn = fnOrObject;
+      setState(produce(state, fn));
+    } else {
+      const newState = fnOrObject;
+      setState({
+        ...state,
+        ...newState,
+      });
+    }
+  };
+  return [state, setImmerState];
 };
 
 export const getTodos = ms =>
@@ -73,4 +91,6 @@ export const NavLink = ({ activeClassName, ...restProps }) => {
 };
 
 export const filterStates = makeEnum(['all', 'completed', 'incomplete']);
-export const todoListStates = makeEnum(['idle', 'loading', 'success']);
+export const asyncStates = makeEnum(['idle', 'pending', 'resolved', 'rejected']);
+
+export const makeImmerFn = fn => (state, payload) => produce(state, i => fn(i, payload));

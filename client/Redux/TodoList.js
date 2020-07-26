@@ -7,8 +7,8 @@ const TodoList = props => {
   return (
     <CommonTodoList
       filterState={props.filterState}
-      todoListState={props.todoListState}
-      todoList={props.todoList}
+      todoListState={props.todoList.status}
+      todoList={props.todoList.data}
       loadTodos={props.loadTodos}
       changeFilter={props.changeFilter}
       changeTodoStatus={props.changeTodoStatus}

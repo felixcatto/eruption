@@ -1,37 +1,59 @@
 import { uniqueId } from 'lodash';
-import { getTodos, filterStates, todoListStates, makeActions } from '../lib/utils';
+import { getTodos, filterStates, asyncStates, makeActions, makeImmerFn } from '../lib/utils';
 
 export const actions = makeActions([
   'todoList/addNewTodo',
   'todoList/changeTodoStatus',
-  'todoListState/loadTodosRequest',
-  'todoListState/loadTodosSuccess',
+  'todoList/loadTodosRequest',
+  'todoList/loadTodosSuccess',
   'filterState/changeFilter',
 ]);
 
 export const todoList = store => {
-  store.on('@init', () => ({ todoList: [] }));
-  store.on(actions.addNewTodo, (state, text) => ({
-    todoList: state.todoList.concat({
-      id: uniqueId(),
-      text,
-      isCompleted: false,
-    }),
+  store.on('@init', () => ({
+    todoList: {
+      data: [],
+      status: asyncStates.idle,
+      errors: null,
+    },
   }));
-  store.on(actions.changeTodoStatus, (state, todoId) => ({
-    todoList: state.todoList.map(todo =>
-      todo.id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo
-    ),
-  }));
-  store.on(actions.loadTodosSuccess, (state, items) => ({
-    todoList: items,
-  }));
-};
 
-export const todoListState = store => {
-  store.on('@init', () => ({ todoListState: todoListStates.idle }));
-  store.on(actions.loadTodosRequest, () => ({ todoListState: todoListStates.loading }));
-  store.on(actions.loadTodosSuccess, () => ({ todoListState: todoListStates.success }));
+  store.on(
+    actions.addNewTodo,
+    makeImmerFn((state, text) => {
+      state.todoList.data.push({
+        id: uniqueId(),
+        text,
+        isCompleted: false,
+      });
+    })
+  );
+
+  store.on(
+    actions.changeTodoStatus,
+    makeImmerFn((state, todoId) => {
+      const todo = state.todoList.data.find(el => el.id === todoId);
+      if (todo) {
+        todo.isCompleted = !todo.isCompleted;
+      }
+    })
+  );
+
+  store.on(actions.loadTodosRequest, () => ({
+    todoList: {
+      data: [],
+      status: asyncStates.pending,
+      errors: null,
+    },
+  }));
+
+  store.on(actions.loadTodosSuccess, (state, items) => ({
+    todoList: {
+      data: items,
+      status: asyncStates.resolved,
+      errors: null,
+    },
+  }));
 };
 
 export const filterState = store => {

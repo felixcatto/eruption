@@ -2,9 +2,8 @@ import { connect } from 'react-redux';
 import TodoList from './TodoList';
 import { addNewTodo, changeTodoStatus, changeFilter, loadTodos } from './reduxDump';
 
-const mapStateToProps = ({ todoList, todoListState, filterState }) => ({
+const mapStateToProps = ({ todoList, filterState }) => ({
   todoList,
-  todoListState,
   filterState,
 });
 

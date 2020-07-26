@@ -1,44 +1,55 @@
 import React from 'react';
 import { uniqueId } from 'lodash';
-import { useMergedState, getTodos, filterStates, todoListStates } from '../lib/utils';
+import { getTodos, filterStates, asyncStates, useImmerState } from '../lib/utils';
 import CommonTodoList from '../components/CommonTodoList';
 
 const TodoList = () => {
-  const [state, setState] = useMergedState({
-    todoList: [],
-    todoListState: todoListStates.idle,
+  const [state, setState] = useImmerState({
+    todoList: {
+      data: [],
+      status: asyncStates.idle,
+      errors: null,
+    },
     filterState: filterStates.all,
   });
-  const { filterState, todoListState, todoList } = state;
+  const { filterState, todoList } = state;
   console.log(state);
 
   const loadTodos = async ms => {
-    setState({ todoListState: todoListStates.loading });
+    setState(i => {
+      i.todoList.data = [];
+      i.todoList.status = asyncStates.pending;
+      i.todoList.errors = null;
+    });
     getTodos(ms).then(items =>
-      setState({ todoList: items, todoListState: todoListStates.success })
+      setState(i => {
+        i.todoList.data = items;
+        i.todoList.status = asyncStates.resolved;
+        i.todoList.errors = null;
+      })
     );
   };
+
   const changeFilter = filterButtonState => setState({ filterState: filterButtonState });
-  const changeTodoStatus = id => {
-    const todo = todoList.find(el => el.id === id);
-    todo.isCompleted = !todo.isCompleted;
-    setState({ todoList });
-  };
-  const addNewTodo = text => {
-    setState({
-      todoList: todoList.concat({
+  const changeTodoStatus = id =>
+    setState(i => {
+      const todo = i.todoList.data.find(el => el.id === id);
+      todo.isCompleted = !todo.isCompleted;
+    });
+  const addNewTodo = text =>
+    setState(i => {
+      i.todoList.data.push({
         id: uniqueId(),
         text,
         isCompleted: false,
-      }),
+      });
     });
-  };
 
   return (
     <CommonTodoList
       filterState={filterState}
-      todoListState={todoListState}
-      todoList={todoList}
+      todoListState={todoList.status}
+      todoList={todoList.data}
       loadTodos={loadTodos}
       changeFilter={changeFilter}
       changeTodoStatus={changeTodoStatus}

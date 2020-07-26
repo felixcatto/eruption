@@ -1,6 +1,6 @@
 import { uniqueId } from 'lodash';
 import { declareAction, declareAtom } from '@reatom/core';
-import { getTodos, filterStates, todoListStates } from '../lib/utils';
+import { getTodos, filterStates, asyncStates } from '../lib/utils';
 
 export const actions = {
   addNewTodo: declareAction('addNewTodo'),
@@ -10,24 +10,42 @@ export const actions = {
   changeFilter: declareAction('changeFilter'),
 };
 
-export const todoListAtom = declareAtom([], on => [
-  on(actions.addNewTodo, (state, text) =>
-    state.concat({
-      id: uniqueId(),
-      text,
-      isCompleted: false,
-    })
-  ),
-  on(actions.changeTodoStatus, (state, todoId) =>
-    state.map(todo => (todo.id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo))
-  ),
-  on(actions.loadTodosSuccess, (state, items) => items),
-]);
+export const todoListAtom = declareAtom(
+  {
+    data: [],
+    status: asyncStates.idle,
+    errors: null,
+  },
+  on => [
+    on(actions.addNewTodo, (state, text) => ({
+      ...state,
+      data: state.data.concat({
+        id: uniqueId(),
+        text,
+        isCompleted: false,
+      }),
+    })),
 
-export const todoListStateAtom = declareAtom(todoListStates.idle, on => [
-  on(actions.loadTodosRequest, () => todoListStates.loading),
-  on(actions.loadTodosSuccess, () => todoListStates.success),
-]);
+    on(actions.changeTodoStatus, (state, todoId) => ({
+      ...state,
+      data: state.data.map(todo =>
+        todo.id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo
+      ),
+    })),
+
+    on(actions.loadTodosRequest, () => ({
+      data: [],
+      status: asyncStates.pending,
+      errors: null,
+    })),
+
+    on(actions.loadTodosSuccess, (state, items) => ({
+      data: items,
+      status: asyncStates.resolved,
+      errors: null,
+    })),
+  ]
+);
 
 export const filterStateAtom = declareAtom(filterStates.all, on => [
   on(actions.changeFilter, (state, newFilterState) => newFilterState),

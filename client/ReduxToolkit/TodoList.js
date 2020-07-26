@@ -6,21 +6,20 @@ import CommonTodoList from '../components/CommonTodoList';
 
 const todoListSelector = createSelector(
   state => state.todoList,
-  state => state.todoListState,
   state => state.filterState,
-  (todoList, todoListState, filterState) => ({ todoList, todoListState, filterState })
+  (todoList, filterState) => ({ todoList, filterState })
 );
 
 const TodoList = () => {
-  const { filterState, todoListState, todoList } = useSelector(todoListSelector);
+  const { filterState, todoList } = useSelector(todoListSelector);
   const dispatch = useDispatch();
-  console.log({ todoList, todoListState, filterState });
+  console.log({ todoList, filterState });
 
   return (
     <CommonTodoList
       filterState={filterState}
-      todoListState={todoListState}
-      todoList={todoList}
+      todoListState={todoList.status}
+      todoList={todoList.data}
       loadTodos={payload => dispatch(loadTodos(payload))}
       changeFilter={payload => dispatch(changeFilter(payload))}
       changeTodoStatus={payload => dispatch(changeTodoStatus(payload))}

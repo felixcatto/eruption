@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { Formik, Field, Form } from 'formik';
 import s from './CommonTodoList.module.scss';
 import { SpinnerSvg } from './svgIcons';
-import { filterStates, todoListStates } from '../lib/utils';
+import { filterStates, asyncStates } from '../lib/utils';
 
 const CommonTodoList = props => {
   const {
@@ -17,7 +17,7 @@ const CommonTodoList = props => {
   } = props;
 
   useEffect(() => {
-    if (todoListState === todoListStates.idle) {
+    if (todoListState === asyncStates.idle) {
       loadTodos(2000);
     }
   }, []);
@@ -66,7 +66,7 @@ const CommonTodoList = props => {
           </Form>
         </Formik>
         <div className="mb-15">
-          {todoListState === todoListStates.loading ? (
+          {todoListState === asyncStates.pending ? (
             <SpinnerSvg modifier="bold" />
           ) : (
             filteredTodos.map(todo => (

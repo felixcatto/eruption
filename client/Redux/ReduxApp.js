@@ -4,13 +4,12 @@ import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { todoListReducer, todoListStateReducer, filterStateReducer } from './reduxDump';
+import { todoListReducer, filterStateReducer } from './reduxDump';
 import TodoListContainer from './TodoListContainer';
 
 const store = createStore(
   combineReducers({
     todoList: todoListReducer,
-    todoListState: todoListStateReducer,
     filterState: filterStateReducer,
   }),
   composeWithDevTools(applyMiddleware(thunkMiddleware, createLogger()))

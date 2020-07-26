@@ -1,5 +1,5 @@
 import { uniqueId } from 'lodash';
-import { getTodos, filterStates, todoListStates } from '../lib/utils';
+import { getTodos, filterStates, asyncStates } from '../lib/utils';
 
 // actions
 export const addNewTodo = text => ({
@@ -24,34 +24,42 @@ export const loadTodos = ms => async dispatch => {
 };
 
 // reducers
-export const todoListReducer = (state = [], action) => {
+export const todoListReducer = (
+  state = { data: [], status: asyncStates.idle, errors: null },
+  action
+) => {
   switch (action.type) {
     case 'TODO_ADD':
-      return [
+      return {
         ...state,
-        {
-          id: uniqueId(),
-          text: action.text,
-          isCompleted: false,
-        },
-      ];
+        data: [
+          ...state.data,
+          {
+            id: uniqueId(),
+            text: action.text,
+            isCompleted: false,
+          },
+        ],
+      };
     case 'TODO_CHANGE_STATUS':
-      return state.map(todo =>
-        todo.id === action.id ? { ...todo, isCompleted: !todo.isCompleted } : todo
-      );
-    case 'TODOS_LOAD_SUCCESS':
-      return action.todoList;
-    default:
-      return state;
-  }
-};
-
-export const todoListStateReducer = (state = todoListStates.idle, action) => {
-  switch (action.type) {
+      return {
+        ...state,
+        data: state.data.map(todo =>
+          todo.id === action.id ? { ...todo, isCompleted: !todo.isCompleted } : todo
+        ),
+      };
     case 'TODOS_LOAD_REQUEST':
-      return todoListStates.loading;
+      return {
+        data: [],
+        status: asyncStates.pending,
+        errors: null,
+      };
     case 'TODOS_LOAD_SUCCESS':
-      return todoListStates.success;
+      return {
+        data: action.todoList,
+        status: asyncStates.resolved,
+        errors: null,
+      };
     default:
       return state;
   }
