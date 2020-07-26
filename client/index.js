@@ -6,6 +6,7 @@ import ReactStateContext from './reactStateContext/RSCApp';
 import Redux from './Redux/ReduxApp';
 import ReduxToolkit from './ReduxToolkit/ReduxToolkitApp';
 import Storeon from './storeon/StoreonApp';
+import Reatom from './reatom/ReatomApp';
 import './index.scss';
 import routes from './lib/routes';
 import { NavLink } from './lib/utils';
@@ -69,7 +70,7 @@ const App = () => {
         <Redux path={routes.redux} />
         <ReduxToolkit path={routes.reduxToolkit} />
         <Storeon path={routes.storeon} />
-        <Stab path={routes.reatom} />
+        <Reatom path={routes.reatom} />
         <Stab path={routes.effector} />
         <Stab path={routes.mobx} />
       </Router>
