@@ -7,6 +7,7 @@ import Redux from './Redux/ReduxApp';
 import ReduxToolkit from './ReduxToolkit/ReduxToolkitApp';
 import Storeon from './storeon/StoreonApp';
 import Reatom from './reatom/ReatomApp';
+import EFR from './effector/TodoList';
 import './index.scss';
 import routes from './lib/routes';
 import { NavLink } from './lib/utils';
@@ -14,6 +15,7 @@ import { NavLink } from './lib/utils';
 const Home = () => <img src="/img/v2.jpg" className="app__splash-screen" />;
 const Stab = () => <div>To be done</div>;
 const ReactStateInline = () => <RSInline />;
+const Effector = () => <EFR />;
 
 const App = () => {
   const [state, setState] = useState({ iprop: 0 });
@@ -71,7 +73,7 @@ const App = () => {
         <ReduxToolkit path={routes.reduxToolkit} />
         <Storeon path={routes.storeon} />
         <Reatom path={routes.reatom} />
-        <Stab path={routes.effector} />
+        <Effector path={routes.effector} />
         <Stab path={routes.mobx} />
       </Router>
     </div>

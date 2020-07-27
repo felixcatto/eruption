@@ -18,9 +18,9 @@ const TodoList = () => {
       todoListState={todoList.status}
       todoList={todoList.data}
       loadTodos={loadTodos}
-      changeFilter={payload => changeFilter(payload)}
-      changeTodoStatus={payload => changeTodoStatus(payload)}
-      addNewTodo={payload => addNewTodo(payload)}
+      changeFilter={changeFilter}
+      changeTodoStatus={changeTodoStatus}
+      addNewTodo={addNewTodo}
     />
   );
 };
