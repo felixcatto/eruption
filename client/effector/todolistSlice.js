@@ -1,13 +1,12 @@
-import { createStore, createEvent } from 'effector';
+import { createStore, createEvent, createEffect } from 'effector';
 import { uniqueId } from 'lodash';
 import { getTodos, filterStates, asyncStates } from '../lib/utils';
 
 export const actions = {
   addNewTodo: createEvent(),
   changeTodoStatus: createEvent(),
-  loadTodosRequest: createEvent(),
-  loadTodosSuccess: createEvent(),
   changeFilter: createEvent(),
+  loadTodos: createEffect().use(async ms => getTodos(ms)),
 };
 
 export const $todoList = createStore({
@@ -29,12 +28,12 @@ export const $todoList = createStore({
       todo.id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo
     ),
   }))
-  .on(actions.loadTodosRequest, () => ({
+  .on(actions.loadTodos, () => ({
     data: [],
     status: asyncStates.pending,
     errors: null,
   }))
-  .on(actions.loadTodosSuccess, (state, items) => ({
+  .on(actions.loadTodos.done, (state, { result: items }) => ({
     data: items,
     status: asyncStates.resolved,
     errors: null,
@@ -44,9 +43,3 @@ export const $filterState = createStore(filterStates.all).on(
   actions.changeFilter,
   (state, newFilterState) => newFilterState
 );
-
-export const loadTodos = async ms => {
-  actions.loadTodosRequest();
-  const items = await getTodos(ms);
-  actions.loadTodosSuccess(items);
-};

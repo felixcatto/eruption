@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStore } from 'effector-react';
 import CommonTodoList from '../components/CommonTodoList';
-import { actions, $todoList, $filterState, loadTodos } from './todolistSlice';
+import { actions, $todoList, $filterState } from './todolistSlice';
 
 const TodoList = () => {
   const todoList = useStore($todoList);
@@ -13,7 +13,7 @@ const TodoList = () => {
       filterState={filterState}
       todoListState={todoList.status}
       todoList={todoList.data}
-      loadTodos={loadTodos}
+      loadTodos={actions.loadTodos}
       changeFilter={actions.changeFilter}
       changeTodoStatus={actions.changeTodoStatus}
       addNewTodo={actions.addNewTodo}
