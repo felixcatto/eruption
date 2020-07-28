@@ -21,13 +21,12 @@ const TodoList = () => {
       i.todoList.status = asyncStates.pending;
       i.todoList.errors = null;
     });
-    getTodos(ms).then(items =>
-      setState(i => {
-        i.todoList.data = items;
-        i.todoList.status = asyncStates.resolved;
-        i.todoList.errors = null;
-      })
-    );
+    const items = await getTodos(ms);
+    setState(i => {
+      i.todoList.data = items;
+      i.todoList.status = asyncStates.resolved;
+      i.todoList.errors = null;
+    });
   };
 
   const changeFilter = filterButtonState => setState({ filterState: filterButtonState });

@@ -32,10 +32,10 @@ rules:
     - objects: only-multiline
       arrays: only-multiline
       functions: ignore
-  'no-param-reassign':
+  no-param-reassign:
     - error
-    - props: true
-      ignorePropertyModificationsFor:
-        - i
-        - state
+    - props: false
+  no-return-assign:
+    - error
+    - except-parens
   react/prop-types: 0
