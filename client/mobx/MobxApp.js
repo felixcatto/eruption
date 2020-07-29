@@ -1,12 +1,22 @@
 import React from 'react';
 import 'mobx-react-lite/batchingForReactDom';
+import { useLocalStore } from 'mobx-react-lite';
 import TodoList from './TodoList';
-import { MobxProvider } from './context';
+import Context from './context';
+import { todoListStore, filterStateStore } from './todolistSlice';
 
-const MobxApp = () => (
-  <MobxProvider>
-    <TodoList />
-  </MobxProvider>
-);
+const MobxApp = () => {
+  console.log('MobX: App');
+  const store = {
+    todoList: useLocalStore(todoListStore),
+    filterState: useLocalStore(filterStateStore),
+  };
 
-export default React.memo(MobxApp);
+  return (
+    <Context.Provider value={store}>
+      <TodoList />
+    </Context.Provider>
+  );
+};
+
+export default MobxApp;

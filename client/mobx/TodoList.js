@@ -1,12 +1,13 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { toJS } from 'mobx';
+// import { toJS } from 'mobx';
 import CommonTodoList from '../components/CommonTodoList';
-import { useMobxStore } from './context';
+import Context from './context';
 
 const TodoList = observer(() => {
-  const { todoList, filterState } = useMobxStore();
-  console.log({ todoList: toJS(todoList), filterState: toJS(filterState) });
+  const { todoList, filterState } = React.useContext(Context);
+  // console.log({ todoList: toJS(todoList), filterState: toJS(filterState) });
+  console.log('MobX: TodoList');
 
   return (
     <CommonTodoList
