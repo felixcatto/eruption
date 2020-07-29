@@ -1,9 +1,10 @@
 import React from 'react';
 import { useStore } from 'effector-react';
 import CommonTodoList from '../components/CommonTodoList';
-import { actions, $todoList, $filterState } from './todolistSlice';
+import Context from './context';
 
 const TodoList = () => {
+  const { actions, $todoList, $filterState } = React.useContext(Context);
   const todoList = useStore($todoList);
   const filterState = useStore($filterState);
   console.log({ todoList, filterState });
@@ -21,4 +22,4 @@ const TodoList = () => {
   );
 };
 
-export default React.memo(TodoList);
+export default TodoList;

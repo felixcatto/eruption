@@ -7,7 +7,7 @@ import Redux from './redux/ReduxApp';
 import ReduxToolkit from './reduxToolkit/ReduxToolkitApp';
 import Storeon from './storeon/StoreonApp';
 import Reatom from './reatom/ReatomApp';
-import EFR from './effector/TodoList';
+import EFR from './effector/EffectorApp';
 import MX from './mobx/MobxApp';
 import './index.scss';
 import routes from './lib/routes';
