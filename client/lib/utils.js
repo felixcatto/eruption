@@ -31,21 +31,42 @@ export const useMergedState = initialState => {
   return [state, setMergedState];
 };
 
+export const useMergeState = initialState => {
+  const [state, setState] = useState(initialState);
+
+  const oldState = React.useRef();
+  oldState.current = state;
+
+  const setMergeState = React.useRef(newState =>
+    setState({
+      ...oldState.current,
+      ...newState,
+    })
+  );
+
+  return [state, setMergeState.current];
+};
+
 export const useImmerState = initialState => {
   const [state, setState] = useState(initialState);
-  const setImmerState = fnOrObject => {
+
+  const oldState = React.useRef();
+  oldState.current = state;
+
+  const setImmerState = React.useRef(fnOrObject => {
     if (isFunction(fnOrObject)) {
       const fn = fnOrObject;
-      setState(produce(state, fn));
+      setState(produce(oldState.current, fn));
     } else {
       const newState = fnOrObject;
       setState({
-        ...state,
+        ...oldState.current,
         ...newState,
       });
     }
-  };
-  return [state, setImmerState];
+  });
+
+  return [state, setImmerState.current];
 };
 
 export const getTodos = ms =>
@@ -87,6 +108,12 @@ export const makeActions = actionStrings => {
 
 export const NavLink = ({ activeClassName, ...restProps }) => {
   const isActive = ({ isCurrent }) => (isCurrent ? { className: activeClassName } : {});
+  return <Link getProps={isActive} {...restProps} />;
+};
+
+export const PartialNavLink = ({ activeClassName, ...restProps }) => {
+  const isActive = ({ isPartiallyCurrent }) =>
+    isPartiallyCurrent ? { className: activeClassName } : {};
   return <Link getProps={isActive} {...restProps} />;
 };
 

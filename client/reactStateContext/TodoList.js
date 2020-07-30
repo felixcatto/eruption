@@ -1,25 +1,26 @@
-import React, { useContext, useMemo } from 'react';
-import { OldContext } from './context';
+import React from 'react';
+import { connect } from './context';
+import CommonTodoList from '../components/CommonTodoList';
 
 const TodoList = props => {
-  console.log('Context layer');
-  const state = useContext(OldContext);
-  console.log(state);
+  const { todoList, filterState, actions } = props;
+  console.log({ todoList, filterState });
 
-  return useMemo(() => {
-    console.log('TodoList');
-    console.log(props);
-    const changeContextX = () => state.setContextState({ x: Math.random() });
-
-    return (
-      <div className="d-flex">
-        <div className="mr-15 clickable" onClick={changeContextX}>
-          Change USED context prop:
-        </div>
-        <div>{state.x}</div>
-      </div>
-    );
-  }, [props.iprop, state.x]);
+  return (
+    <CommonTodoList
+      filterState={filterState}
+      todoListState={todoList.status}
+      todoList={todoList.data}
+      loadTodos={actions.loadTodos}
+      changeFilter={actions.changeFilter}
+      changeTodoStatus={actions.changeTodoStatus}
+      addNewTodo={actions.addNewTodo}
+    />
+  );
 };
 
-export default TodoList;
+export default connect(({ todoList, filterState, actions }) => ({
+  todoList,
+  filterState,
+  actions,
+}))(TodoList);

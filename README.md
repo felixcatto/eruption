@@ -1,10 +1,10 @@
 # Description
 
-Todo list app :D using some popular state managers
+Todo list app :smile: using some popular state managers
 
-* react state
-* storeon
-* reatom
-* effector
-* redux pure
-* redux toolkit
+* React state (inline and context)
+* Redux (pure and toolkit)
+* Storeon
+* Reatom
+* Effector
+* Mobx

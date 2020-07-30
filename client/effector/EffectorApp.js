@@ -17,4 +17,4 @@ const EffectorApp = () => {
   );
 };
 
-export default React.memo(EffectorApp);
+export default EffectorApp;

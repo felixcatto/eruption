@@ -39,3 +39,4 @@ rules:
     - error
     - except-parens
   react/prop-types: 0
+  react/display-name: 1
