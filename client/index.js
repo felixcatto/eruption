@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { render } from 'react-dom';
 import { Router, Link } from '@reach/router';
 import RSInline from './reactStateInline/TodoList';
-import ReactStateContext from './reactStateContext/RSCApp';
+import ReactStateContext from './reactStateContext/Crossroad';
+import RSCOld from './reactStateContext/RSCOld';
+import RSCNew from './reactStateContext/RSCNew';
+import RSCStoreon from './reactStateContext/RSCStoreon';
+import RSCHook from './reactStateContext/RSCHook';
 import Redux from './redux/ReduxApp';
 import ReduxToolkit from './reduxToolkit/ReduxToolkitApp';
 import Storeon from './storeon/StoreonApp';
@@ -43,7 +47,7 @@ const App = () => {
         <NavLink to={routes.reactStateInline} activeClassName="app__nav-link_active">
           React State Inline
         </NavLink>
-        <NavLink to={routes.reactStateContext} activeClassName="app__nav-link_active">
+        <NavLink to={routes.reactStateContext.index} activeClassName="app__nav-link_active">
           React State Context
         </NavLink>
         <NavLink to={routes.redux} activeClassName="app__nav-link_active">
@@ -69,7 +73,11 @@ const App = () => {
       <Router>
         <Home path={routes.root} />
         <ReactStateInline path={routes.reactStateInline} />
-        <ReactStateContext path={routes.reactStateContext} />
+        <ReactStateContext path={routes.reactStateContext.index} />
+        <RSCOld path={routes.reactStateContext.old} />
+        <RSCNew path={routes.reactStateContext.new} />
+        <RSCStoreon path={routes.reactStateContext.storeon} />
+        <RSCHook path={routes.reactStateContext.hook} />
         <Redux path={routes.redux} />
         <ReduxToolkit path={routes.reduxToolkit} />
         <Storeon path={routes.storeon} />

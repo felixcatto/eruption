@@ -1,9 +1,9 @@
 import React, { useContext, useMemo } from 'react';
-import Context from './context';
+import { OldContext } from './context';
 
 const TodoList = props => {
   console.log('Context layer');
-  const state = useContext(Context);
+  const state = useContext(OldContext);
   console.log(state);
 
   return useMemo(() => {
