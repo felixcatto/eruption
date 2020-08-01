@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { uniqueId, isFunction } from 'lodash';
+import { uniqueId, isFunction, isObject } from 'lodash';
 import produce from 'immer';
 import { Link } from '@reach/router';
 
@@ -74,18 +74,29 @@ export const getTodos = ms =>
     setTimeout(() => resolve(todosFromApi), ms);
   });
 
-export const makeEnum = args =>
-  new Proxy(
-    args.reduce((acc, key) => ({ ...acc, [key]: key }), {}),
-    {
+export const makeUndefinedKeyError = rootObject => {
+  const proxyObject = object =>
+    new Proxy(object, {
       get(target, key) {
         if (Object.prototype.hasOwnProperty.call(target, key)) {
           return target[key];
         }
+        console.warn(target);
         throw new Error(`There is no key [${key}] in enum`);
       },
+    });
+
+  Object.keys(rootObject).forEach(key => {
+    if (isObject(rootObject[key])) {
+      rootObject[key] = proxyObject(rootObject[key]);
     }
-  );
+  });
+
+  return proxyObject(rootObject);
+};
+
+export const makeEnum = args =>
+  makeUndefinedKeyError(args.reduce((acc, key) => ({ ...acc, [key]: key }), {}));
 
 export const makeActions = actionStrings => {
   const actions = actionStrings.reduce((acc, actionString) => {
@@ -96,14 +107,7 @@ export const makeActions = actionStrings => {
     };
   }, {});
 
-  return new Proxy(actions, {
-    get(target, key) {
-      if (Object.prototype.hasOwnProperty.call(target, key)) {
-        return target[key];
-      }
-      throw new Error(`There is no key [${key}] in enum`);
-    },
-  });
+  return makeUndefinedKeyError(actions);
 };
 
 export const NavLink = ({ activeClassName, ...restProps }) => {

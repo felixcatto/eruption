@@ -1,4 +1,6 @@
-export default {
+import { makeUndefinedKeyError } from './utils';
+
+export default makeUndefinedKeyError({
   root: '/',
   reactStateInline: '/react_state_inline',
   reactStateContext: {
@@ -14,4 +16,4 @@ export default {
   storeon: '/storeon',
   effector: '/effector',
   mobx: '/mobx',
-};
+});
