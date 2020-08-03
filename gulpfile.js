@@ -1,41 +1,46 @@
 const gulp = require('gulp');
 const del = require('del');
 const webpack = require('webpack');
-const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
 const webpackConfig = require('./webpack.config.js');
+const babelConfig = require('./babelconfig.js');
+const babel = require('gulp-babel');
+const forever = require('forever-monitor');
 
 const paths = {
   layout: {
-    src: 'index.html',
+    src: 'public/index.html',
     dest: 'dist/public',
   },
   img: {
     src: 'public/img/**/*',
     dest: 'dist/public/img',
   },
+  serverJs: {
+    src: ['*/**/*.js', '!node_modules/**', '!dist/**', '!client/**'],
+    dest: 'dist',
+  },
 };
 
-const serve = new Serve({
-  port: 3000,
-  static: [webpackConfig.output.path],
-  hmr: false,
-  liveReload: true,
-  historyFallback: true,
-  client: {
-    silent: true,
-  },
-});
+const server = new forever.Monitor('dist/bin/server.js');
 
-if (process.env.NODE_ENV !== 'production') {
-  webpackConfig.plugins = (webpackConfig.plugins || []).concat(serve);
-}
+const startServer = done => {
+  server.on('start', () => done());
+  server.start();
+};
+
+const reloadServer = done => {
+  server.removeAllListeners('restart');
+  server.on('restart', () => done());
+  server.restart();
+};
 
 const compiler = webpack(webpackConfig);
 
 const startDevServer = done => compiler.watch({}, done);
 
 const reloadDevServer = done => {
-  serve.emit('reload', { source: 'config' });
+  const [devServer] = webpackConfig.plugins;
+  devServer.emit('reload');
   done();
 };
 
@@ -47,6 +52,12 @@ const copyMisc = () => gulp.src(paths.img.src).pipe(gulp.dest(paths.img.dest));
 
 const bundleClientJs = done => compiler.run(done);
 
+const transpileServerJs = () =>
+  gulp
+    .src(paths.serverJs.src, { since: gulp.lastRun(transpileServerJs) })
+    .pipe(babel(babelConfig.server))
+    .pipe(gulp.dest(paths.serverJs.dest));
+
 const trackChangesInDist = () => {
   const watcher = gulp.watch(['dist/**/*']);
   watcher
@@ -56,12 +67,22 @@ const trackChangesInDist = () => {
 };
 
 const watch = () => {
-  gulp.watch(paths.layout.src, gulp.series(copyLayout, reloadDevServer));
+  gulp.watch(paths.layout.src, gulp.series(copyLayout, reloadServer, reloadDevServer));
+  gulp.watch(paths.serverJs.src, gulp.series(transpileServerJs, reloadServer));
   trackChangesInDist();
 };
 
-const dev = gulp.series(clean, copyLayout, copyMisc, startDevServer, watch);
-const prod = gulp.series(clean, copyLayout, copyMisc, bundleClientJs);
+const dev = gulp.series(
+  clean,
+  copyLayout,
+  copyMisc,
+  transpileServerJs,
+  startServer,
+  startDevServer,
+  watch
+);
+
+const prod = gulp.series(clean, copyLayout, copyMisc, bundleClientJs, transpileServerJs);
 
 module.exports = {
   dev,

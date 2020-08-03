@@ -1,11 +1,29 @@
 const path = require('path');
-const { merge } = require('webpack-merge');
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
+const babelConfig = require('./babelconfig.js');
+
+const outputPath = path.resolve(__dirname, 'dist/public');
+
+const devServer = new Serve({
+  port: 3000,
+  static: [outputPath],
+  hmr: false,
+  liveReload: true,
+  historyFallback: true,
+  client: {
+    silent: true,
+  },
+});
 
 const common = {
+  entry: {
+    index: path.resolve(__dirname, 'client/index.js'),
+  },
   output: {
     filename: 'js/[name].js',
-    path: path.resolve(__dirname, 'dist/public'),
+    path: outputPath,
   },
   module: {
     rules: [
@@ -14,30 +32,7 @@ const common = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  modules: false,
-                  targets: {
-                    browsers: [
-                      'last 2 Chrome versions',
-                      'last 2 Edge versions',
-                      'last 2 Firefox versions',
-                      'last 2 Safari versions',
-                    ],
-                  },
-                },
-              ],
-              '@babel/preset-react',
-            ],
-            plugins: [
-              '@babel/plugin-proposal-optional-chaining',
-              ['@babel/plugin-proposal-pipeline-operator', { proposal: 'minimal' }],
-              '@reatom/babel-plugin',
-            ],
-          },
+          options: babelConfig.client,
         },
       },
       {
@@ -76,6 +71,7 @@ const common = {
     new MiniCssExtractPlugin({
       filename: 'css/[name].css',
     }),
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
   ],
   stats: {
     warnings: false,
@@ -85,18 +81,21 @@ const common = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = merge(common, {
+  module.exports = {
+    ...common,
     mode: 'production',
-    entry: {
-      index: path.resolve(__dirname, 'client/index.js'),
-    },
-  });
+  };
 } else {
-  module.exports = merge(common, {
+  const plugins = [devServer].concat(common.plugins);
+  const entry = {
+    index: [common.entry.index, 'webpack-plugin-serve/client'],
+  };
+
+  module.exports = {
+    ...common,
     mode: 'development',
     devtool: 'cheap-module-eval-source-map',
-    entry: {
-      index: [path.resolve(__dirname, 'client/index.js'), 'webpack-plugin-serve/client'],
-    },
-  });
+    entry,
+    plugins,
+  };
 }
