@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const babelConfig = require('./babelconfig.js');
 
 const outputPath = path.resolve(__dirname, 'dist/public');
@@ -80,7 +81,14 @@ const common = {
   },
 };
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.ANALYZE) {
+  const plugins = [new BundleAnalyzerPlugin({ openAnalyzer: false })].concat(common.plugins);
+  module.exports = {
+    ...common,
+    mode: 'production',
+    plugins,
+  };
+} else if (process.env.NODE_ENV === 'production') {
   module.exports = {
     ...common,
     mode: 'production',

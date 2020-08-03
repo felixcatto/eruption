@@ -1,10 +1,10 @@
 const gulp = require('gulp');
 const del = require('del');
 const webpack = require('webpack');
-const webpackConfig = require('./webpack.config.js');
-const babelConfig = require('./babelconfig.js');
 const babel = require('gulp-babel');
 const forever = require('forever-monitor');
+const webpackConfig = require('./webpack.config.js');
+const babelConfig = require('./babelconfig.js');
 
 const paths = {
   layout: {

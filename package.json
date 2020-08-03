@@ -41,6 +41,7 @@
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
     "webpack": "^4.43.0",
+    "webpack-bundle-analyzer": "^3.8.0",
     "webpack-nano": "^1.0.0",
     "webpack-plugin-serve": "^1.0.1"
   },

@@ -13,6 +13,9 @@ start-production: build
 webpack-bundle:
 	NODE_ENV=production npx wp
 
+webpack-bundle-analyze:
+	NODE_ENV=production ANALYZE=true npx wp
+
 lint:
 	npx eslint --quiet .
 
