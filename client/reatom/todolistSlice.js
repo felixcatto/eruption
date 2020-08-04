@@ -1,6 +1,7 @@
 import { uniqueId } from 'lodash';
 import { declareAction, declareAtom } from '@reatom/core';
-import { getTodos, filterStates, asyncStates } from '../lib/utils';
+import { filterStates, asyncStates } from '../lib/utils';
+import api from '../lib/api';
 
 export const actions = {
   addNewTodo: declareAction('addNewTodo'),
@@ -53,6 +54,6 @@ export const filterStateAtom = declareAtom(filterStates.all, on => [
 
 actions.loadTodos = declareAction(async (ms, { dispatch }) => {
   dispatch(actions.loadTodosRequest());
-  const items = await getTodos(ms);
+  const items = await api.todos.get(ms);
   dispatch(actions.loadTodosSuccess(items));
 });

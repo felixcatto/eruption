@@ -1,12 +1,13 @@
 import { createStore, createEvent, createEffect } from 'effector';
 import { uniqueId } from 'lodash';
-import { getTodos, filterStates, asyncStates } from '../lib/utils';
+import { filterStates, asyncStates } from '../lib/utils';
+import api from '../lib/api';
 
 export const actions = {
   addNewTodo: createEvent(),
   changeTodoStatus: createEvent(),
   changeFilter: createEvent(),
-  loadTodos: createEffect().use(async ms => getTodos(ms)),
+  loadTodos: createEffect().use(async ms => api.todos.get(ms)),
 };
 
 export const makeTodoList = () =>

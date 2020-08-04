@@ -21,7 +21,7 @@ const paths = {
   },
 };
 
-const server = new forever.Monitor('dist/bin/server.js');
+const server = new forever.Monitor('dist/bin/server.js', { max: 1 });
 
 const startServer = done => {
   server.on('start', () => done());
@@ -29,8 +29,7 @@ const startServer = done => {
 };
 
 const reloadServer = done => {
-  server.removeAllListeners('restart');
-  server.on('restart', () => done());
+  server.once('restart', () => done());
   server.restart();
 };
 
@@ -66,10 +65,11 @@ const trackChangesInDist = () => {
     .on('unlink', path => console.log(`File ${path} was removed`));
 };
 
-const watch = () => {
+const watch = done => {
   gulp.watch(paths.layout.src, gulp.series(copyLayout, reloadServer, reloadDevServer));
   gulp.watch(paths.serverJs.src, gulp.series(transpileServerJs, reloadServer));
   trackChangesInDist();
+  done();
 };
 
 const dev = gulp.series(

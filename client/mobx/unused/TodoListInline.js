@@ -4,7 +4,8 @@ import { observable, toJS, transaction } from 'mobx';
 import 'mobx-react-lite/batchingForReactDom';
 import { uniqueId } from 'lodash';
 import CommonTodoList from '../../components/CommonTodoList';
-import { getTodos, filterStates, asyncStates } from '../../lib/utils';
+import { filterStates, asyncStates } from '../../lib/utils';
+import api from '../../lib/api';
 
 const MobxApp = observer(() => {
   const todoList = useLocalStore(() => ({
@@ -20,7 +21,7 @@ const MobxApp = observer(() => {
     todoList.status = asyncStates.pending;
     todoList.errors = null;
 
-    const items = await getTodos(ms);
+    const items = await api.todos.get(ms);
     transaction(() => {
       todoList.data = items;
       todoList.status = asyncStates.resolved;

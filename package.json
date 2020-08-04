@@ -52,6 +52,7 @@
     "@reatom/debug": "^1.2.0",
     "@reatom/react": "^1.1.4",
     "@reduxjs/toolkit": "^1.4.0",
+    "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
     "effector": "^21.0.3",

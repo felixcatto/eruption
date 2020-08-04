@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { uniqueId } from 'lodash';
-import { getTodos, filterStates, asyncStates } from '../lib/utils';
+import { filterStates, asyncStates } from '../lib/utils';
+import api from '../lib/api';
 
 const todoListSlice = createSlice({
   name: 'todoList',
@@ -58,6 +59,6 @@ export const filterStateReducer = filterStateSlice.reducer;
 
 export const loadTodos = ms => async dispatch => {
   dispatch(loadTodosRequest());
-  const todoList = await getTodos(ms);
+  const todoList = await api.todos.get(ms);
   dispatch(loadTodosSuccess(todoList));
 };

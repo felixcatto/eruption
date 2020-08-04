@@ -1,7 +1,8 @@
 import React from 'react';
 import { uniqueId } from 'lodash';
-import { getTodos, filterStates, asyncStates, useImmerState } from '../lib/utils';
+import { filterStates, asyncStates, useImmerState } from '../lib/utils';
 import CommonTodoList from '../components/CommonTodoList';
+import api from '../lib/api';
 
 const TodoList = () => {
   const [state, setState] = useImmerState({
@@ -21,7 +22,7 @@ const TodoList = () => {
       i.todoList.status = asyncStates.pending;
       i.todoList.errors = null;
     });
-    const items = await getTodos(ms);
+    const items = await api.todos.get(ms);
     setState(i => {
       i.todoList.data = items;
       i.todoList.status = asyncStates.resolved;

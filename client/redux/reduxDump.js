@@ -1,5 +1,6 @@
 import { uniqueId } from 'lodash';
-import { getTodos, filterStates, asyncStates } from '../lib/utils';
+import { filterStates, asyncStates } from '../lib/utils';
+import api from '../lib/api';
 
 // actions
 export const addNewTodo = text => ({
@@ -19,7 +20,7 @@ export const changeFilter = filterState => ({
 
 export const loadTodos = ms => async dispatch => {
   dispatch({ type: 'TODOS_LOAD_REQUEST' });
-  const todoList = await getTodos(ms);
+  const todoList = await api.todos.get(ms);
   dispatch({ type: 'TODOS_LOAD_SUCCESS', todoList });
 };
 

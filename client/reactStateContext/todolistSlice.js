@@ -1,5 +1,6 @@
 import { uniqueId } from 'lodash';
-import { getTodos, filterStates, asyncStates } from '../lib/utils';
+import { filterStates, asyncStates } from '../lib/utils';
+import api from '../lib/api';
 
 export const todoList = {
   todoList: {
@@ -18,7 +19,7 @@ export const actions = {
       i.todoList.status = asyncStates.pending;
       i.todoList.errors = null;
     });
-    const items = await getTodos(ms);
+    const items = await api.todos.get(ms);
     setContextState(i => {
       i.todoList.data = items;
       i.todoList.status = asyncStates.resolved;

@@ -1,6 +1,7 @@
 import { transaction } from 'mobx';
 import { uniqueId } from 'lodash';
-import { getTodos, filterStates, asyncStates } from '../lib/utils';
+import { filterStates, asyncStates } from '../lib/utils';
+import api from '../lib/api';
 
 export const todoListStore = () => ({
   data: [],
@@ -25,7 +26,7 @@ export const todoListStore = () => ({
     this.status = asyncStates.pending;
     this.errors = null;
 
-    const items = await getTodos(ms);
+    const items = await api.todos.get(ms);
     transaction(() => {
       this.data = items;
       this.status = asyncStates.resolved;
