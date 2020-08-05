@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -9,13 +8,22 @@ const outputPath = path.resolve(__dirname, 'dist/public');
 
 const devServer = new Serve({
   port: 3000,
-  static: [outputPath],
   hmr: false,
-  liveReload: true,
-  historyFallback: true,
+  liveReload: false,
   client: {
     silent: true,
   },
+  // static: [outputPath],
+  // historyFallback: true,
+  // liveReload: true,
+  // middleware: (app, builtins) => {
+  //   app.use(
+  //     builtins.proxy('/', {
+  //       target: 'http://localhost:4000',
+  //       ws: false,
+  //     })
+  //   );
+  // },
 });
 
 const common = {
@@ -72,7 +80,6 @@ const common = {
     new MiniCssExtractPlugin({
       filename: 'css/[name].css',
     }),
-    new webpack.EnvironmentPlugin(['NODE_ENV']),
   ],
   stats: {
     warnings: false,

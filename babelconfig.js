@@ -34,10 +34,19 @@ module.exports = {
           },
         },
       ],
+      '@babel/preset-react',
     ],
     plugins: [
       '@babel/plugin-proposal-optional-chaining',
       ['@babel/plugin-proposal-pipeline-operator', { proposal: 'minimal' }],
+      [
+        'css-modules-transform',
+        {
+          generateScopedName: '[local]--[hash:base64:5]',
+          preprocessCss: './lib/processSass.js',
+          extensions: ['.scss'],
+        },
+      ],
     ],
   },
 };
