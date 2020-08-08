@@ -3,7 +3,6 @@ const del = require('del');
 const webpack = require('webpack');
 const babel = require('gulp-babel');
 const EventEmitter = require('events');
-const importFresh = require('import-fresh');
 const webpackConfig = require('./webpack.config.js');
 const babelConfig = require('./babelconfig.js');
 
@@ -14,9 +13,9 @@ const paths = {
     src: 'public/html/index.html',
     dest: 'dist/public/html',
   },
-  img: {
-    src: 'public/img/**/*',
-    dest: 'dist/public/img',
+  public: {
+    src: 'public/**/*',
+    dest: 'dist/public',
   },
   serverJs: {
     src: ['*/**/*.js', '!node_modules/**', '!dist/**', '!client/**'],
@@ -32,9 +31,15 @@ const paths = {
   },
 };
 
+const clearCache = () =>
+  Object.keys(require.cache)
+    .filter(p => !p.match(/node_modules/) && p.match(/dist/))
+    .forEach(key => delete require.cache[key]);
+
 let server;
 const startServer = done => {
-  const getApp = importFresh('./dist/main').default;
+  clearCache();
+  const getApp = require('./dist/main').default;
   const app = getApp();
   server = app.listen(process.env.PORT || 4000, () => done());
 };
@@ -60,7 +65,7 @@ const clean = () => del(['dist']);
 const copyLayout = () => gulp.src(paths.layout.src).pipe(gulp.dest(paths.layout.dest));
 
 const copyMisc = parallel(
-  () => gulp.src(paths.img.src).pipe(gulp.dest(paths.img.dest)),
+  () => gulp.src(paths.public.src).pipe(gulp.dest(paths.public.dest)),
   () => gulp.src(paths.cssModule.src).pipe(gulp.dest(paths.cssModule.dest))
 );
 
@@ -108,7 +113,14 @@ const dev = series(
   watch
 );
 
-const prod = series(clean, copyLayout, copyMisc, bundleClientJs, transpileServerJs);
+const prod = series(
+  clean,
+  copyLayout,
+  copyMisc,
+  bundleClientJs,
+  transpileClientJsForSSR,
+  transpileServerJs
+);
 
 module.exports = {
   dev,

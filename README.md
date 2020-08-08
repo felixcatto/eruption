@@ -8,3 +8,5 @@ Todo list app :smile: using some popular state managers
 * Reatom
 * Effector
 * Mobx
+
+Plus SSR for `Redux toolkit` and `Effector` :fire:

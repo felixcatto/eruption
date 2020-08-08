@@ -4,8 +4,6 @@ const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const babelConfig = require('./babelconfig.js');
 
-const outputPath = path.resolve(__dirname, 'dist/public');
-
 const devServer = new Serve({
   port: 3000,
   hmr: false,
@@ -13,17 +11,13 @@ const devServer = new Serve({
   client: {
     silent: true,
   },
-  // static: [outputPath],
-  // historyFallback: true,
-  // liveReload: true,
-  // middleware: (app, builtins) => {
-  //   app.use(
-  //     builtins.proxy('/', {
-  //       target: 'http://localhost:4000',
-  //       ws: false,
-  //     })
-  //   );
-  // },
+  middleware: (app, builtins) => {
+    app.use(
+      builtins.proxy(pathname => pathname !== '/wps', {
+        target: 'http://localhost:4000',
+      })
+    );
+  },
 });
 
 const common = {
@@ -32,7 +26,7 @@ const common = {
   },
   output: {
     filename: 'js/[name].js',
-    path: outputPath,
+    path: path.resolve(__dirname, 'dist/public'),
   },
   module: {
     rules: [

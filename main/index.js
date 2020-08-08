@@ -8,6 +8,7 @@ import { ServerLocation } from '@reach/router';
 import App from '../client/components/App';
 import applyApi from '../api';
 import { supressConsoleLog } from '../lib/utils';
+import routesInitialState from '../lib/routesInitialState';
 
 export default () => {
   const app = express();
@@ -17,16 +18,21 @@ export default () => {
   const template = fs.readFileSync(path.resolve(__dirname, '../public/html/index.html'), 'utf8');
   applyApi(app);
 
-  app.get('*', (req, res) => {
+  app.get('/*', (req, res) => {
+    const getRouteState = routesInitialState[req.url];
+    const initialState = getRouteState ? getRouteState() : {};
+
     const renderedComponent = supressConsoleLog(() =>
       renderToString(
         <ServerLocation url={req.url}>
-          <App />
+          <App initialState={initialState} />
         </ServerLocation>
       )
     );
 
-    const html = template.replace('{{content}}', renderedComponent);
+    const html = template
+      .replace('{{content}}', renderedComponent)
+      .replace('{{initialState}}', `window.INITIAL_STATE = ${JSON.stringify(initialState)}`);
     res.send(html);
   });
 

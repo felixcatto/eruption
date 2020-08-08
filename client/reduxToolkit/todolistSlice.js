@@ -47,18 +47,15 @@ const filterStateSlice = createSlice({
   },
 });
 
-export const {
-  addNewTodo,
-  changeTodoStatus,
-  loadTodosRequest,
-  loadTodosSuccess,
-} = todoListSlice.actions;
-export const todoListReducer = todoListSlice.reducer;
-export const { changeFilter } = filterStateSlice.actions;
-export const filterStateReducer = filterStateSlice.reducer;
-
-export const loadTodos = ms => async dispatch => {
-  dispatch(loadTodosRequest());
-  const todoList = await api.todos.get(ms);
-  dispatch(loadTodosSuccess(todoList));
+export const actions = {
+  ...todoListSlice.actions,
+  ...filterStateSlice.actions,
+  loadTodos: ms => async dispatch => {
+    const { loadTodosRequest, loadTodosSuccess } = todoListSlice.actions;
+    dispatch(loadTodosRequest());
+    const todoList = await api.todos.get(ms);
+    dispatch(loadTodosSuccess(todoList));
+  },
 };
+export const todoListReducer = todoListSlice.reducer;
+export const filterStateReducer = filterStateSlice.reducer;

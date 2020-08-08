@@ -1,14 +1,29 @@
 import React from 'react';
+import { has } from 'lodash';
+import { SSRContext } from '../lib/context';
 import Context from './context';
-import { actions, makeTodoList, makeFilterState } from './todolistSlice';
+import { actions, $todoList, $filterState } from './todolistSlice';
 import TodoList from './TodoList';
 
 const EffectorApp = () => {
-  const store = {
-    actions,
-    $todoList: makeTodoList(),
-    $filterState: makeFilterState(),
+  const initialState = React.useContext(SSRContext);
+  const storeShape = {
+    ...$todoList,
+    ...$filterState,
   };
+
+  const store = Object.keys(storeShape).reduce(
+    (acc, storeKey) => {
+      const effectorMakeFn = storeShape[storeKey];
+      return {
+        ...acc,
+        [storeKey]: has(initialState, storeKey)
+          ? effectorMakeFn(initialState[storeKey])
+          : effectorMakeFn(),
+      };
+    },
+    { actions }
+  );
 
   return (
     <Context.Provider value={store}>

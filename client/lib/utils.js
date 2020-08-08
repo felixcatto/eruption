@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { isFunction, isObject } from 'lodash';
+import { isFunction, isObject, has } from 'lodash';
 import produce from 'immer';
 import { Link } from '@reach/router';
 
@@ -55,7 +55,7 @@ export const makeUndefinedKeyError = rootObject => {
   const proxyObject = object =>
     new Proxy(object, {
       get(target, key) {
-        if (Object.prototype.hasOwnProperty.call(target, key)) {
+        if (has(target, key)) {
           return target[key];
         }
         console.warn(target);
