@@ -1,3 +1,5 @@
+const sass = require('sass'); // eslint-disable-line
+
 module.exports = {
   client: {
     presets: [
@@ -43,7 +45,10 @@ module.exports = {
         'css-modules-transform',
         {
           generateScopedName: '[local]--[hash:base64:5]',
-          preprocessCss: './lib/processSass.js',
+          preprocessCss: (data, filename) => {
+            if (!filename.endsWith('module.scss')) return '';
+            return sass.renderSync({ file: filename }).css.toString('utf8');
+          },
           extensions: ['.scss'],
         },
       ],

@@ -39,7 +39,7 @@ const clearCache = () =>
 let server;
 const startServer = done => {
   clearCache();
-  const getApp = require('./dist/main').default;
+  const getApp = require('./dist/main').default; // eslint-disable-line
   const app = getApp();
   server = app.listen(process.env.PORT || 4000, () => done());
 };

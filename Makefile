@@ -16,6 +16,9 @@ webpack-bundle:
 webpack-bundle-analyze:
 	NODE_ENV=production ANALYZE=true npx wp
 
+generate-dependencies:
+	madge --exclude '^dist/*' --image g.svg .
+
 lint:
 	npx eslint --quiet .
 
