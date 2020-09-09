@@ -3,16 +3,13 @@ const del = require('del');
 const webpack = require('webpack');
 const babel = require('gulp-babel');
 const EventEmitter = require('events');
+const { makeServer, listen } = require('blunt-livereload');
 const webpackConfig = require('./webpack.config.js');
 const babelConfig = require('./babelconfig.js');
 
 const { series, parallel } = gulp;
 
 const paths = {
-  layout: {
-    src: 'public/html/index.html',
-    dest: 'dist/public/html',
-  },
   public: {
     src: 'public/**/*',
     dest: 'dist/public',
@@ -44,30 +41,24 @@ const startServer = done => {
   server = app.listen(process.env.PORT || 4000, () => done());
 };
 
-const restartServer = done => {
-  server.close(() => startServer(done));
-};
+const restartServer = done => server.close(() => startServer(done));
 
 const webpackEmitter = new EventEmitter();
 const compiler = webpack(webpackConfig);
 compiler.hooks.done.tap('done', () => webpackEmitter.emit('webpackDone'));
+const startWebpack = done => compiler.watch({}, done);
 
-const startDevServer = done => compiler.watch({}, done);
-
-const reloadDevServer = done => {
-  const [devServer] = webpackConfig.plugins;
-  devServer.emit('reload');
-  done();
-};
+const devServer = makeServer();
+const startDevServer = async () => listen(devServer);
+const reloadBrowser = async () => devServer.reloadBrowser();
 
 const clean = () => del(['dist']);
 
-const copyLayout = () => gulp.src(paths.layout.src).pipe(gulp.dest(paths.layout.dest));
-
-const copyMisc = parallel(
-  () => gulp.src(paths.public.src).pipe(gulp.dest(paths.public.dest)),
-  () => gulp.src(paths.cssModule.src).pipe(gulp.dest(paths.cssModule.dest))
-);
+const copyPublic = () => gulp.src(paths.public.src).pipe(gulp.dest(paths.public.dest));
+const copyPublicDev = () =>
+  gulp
+    .src(paths.public.src, { since: gulp.lastRun(copyPublicDev) })
+    .pipe(gulp.symlink(paths.public.dest, { overwrite: false }));
 
 const bundleClientJs = done => compiler.run(done);
 const fakeBundleClientJs = done => webpackEmitter.once('webpackDone', () => done());
@@ -78,9 +69,9 @@ const transpileServerJs = () =>
     .pipe(babel(babelConfig.server))
     .pipe(gulp.dest(paths.serverJs.dest));
 
-const transpileClientJsForSSR = () =>
+const transpileClientJs = () =>
   gulp
-    .src(paths.clientJs.src, { since: gulp.lastRun(transpileClientJsForSSR) })
+    .src(paths.clientJs.src, { since: gulp.lastRun(transpileClientJs) })
     .pipe(babel(babelConfig.server))
     .pipe(gulp.dest(paths.clientJs.dest));
 
@@ -92,35 +83,24 @@ const trackChangesInDist = () => {
     .on('unlink', path => console.log(`File ${path} was removed`));
 };
 
-const watch = done => {
-  gulp.watch(paths.layout.src, series(copyLayout, restartServer, reloadDevServer));
+const watch = async () => {
+  gulp.watch(paths.public.src, series(copyPublicDev, restartServer, reloadBrowser));
   gulp.watch(paths.serverJs.src, series(transpileServerJs, restartServer));
   gulp.watch(
     paths.clientJs.src,
-    series(
-      parallel(fakeBundleClientJs, series(transpileClientJsForSSR, restartServer)),
-      reloadDevServer
-    )
+    series(parallel(fakeBundleClientJs, series(transpileClientJs, restartServer)), reloadBrowser)
   );
   trackChangesInDist();
-  done();
 };
 
 const dev = series(
   clean,
-  parallel(copyLayout, copyMisc, transpileServerJs, transpileClientJsForSSR, startDevServer),
+  parallel(copyPublicDev, transpileServerJs, transpileClientJs, startWebpack, startDevServer),
   startServer,
   watch
 );
 
-const prod = series(
-  clean,
-  copyLayout,
-  copyMisc,
-  bundleClientJs,
-  transpileClientJsForSSR,
-  transpileServerJs
-);
+const prod = series(clean, copyPublic, bundleClientJs, transpileClientJs, transpileServerJs);
 
 module.exports = {
   dev,

@@ -1,8 +1,7 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
-// @import '~@fortawesome/fontawesome-free/css/all.css';
-@import '~@fortawesome/fontawesome-free/css/fontawesome.min.css';
-@import '~@fortawesome/fontawesome-free/css/solid.min.css';
-@import '../lib/scssHelpers.scss';
+@import '../css/scssHelpers.scss';
+@import '../css/fontawesome.min.css';
+@import '../css/solid.min.css';
 
 body {
   font-family: 'Comic Sans MS', 'ubuntu';

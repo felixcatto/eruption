@@ -1,24 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const babelConfig = require('./babelconfig.js');
-
-const devServer = new Serve({
-  port: 3000,
-  hmr: false,
-  liveReload: false,
-  client: {
-    silent: true,
-  },
-  middleware: (app, builtins) => {
-    app.use(
-      builtins.proxy(pathname => pathname !== '/wps', {
-        target: 'http://localhost:4000',
-      })
-    );
-  },
-});
 
 const common = {
   entry: {
@@ -39,13 +22,15 @@ const common = {
         },
       },
       {
-        test: /module\.scss$/,
+        test: /\.scss$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
+              url: false,
               modules: {
+                auto: true,
                 localIdentName: '[local]--[hash:base64:5]',
               },
             },
@@ -53,33 +38,10 @@ const common = {
           'sass-loader',
         ],
       },
-      {
-        test: /(?<!module)\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
-      },
-      {
-        test: /\.(ttf|eot|woff|woff2|svg)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'font',
-            publicPath: '../font',
-          },
-        },
-      },
     ],
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'css/[name].css',
-    }),
-  ],
-  stats: {
-    warnings: false,
-    children: false,
-    modules: false,
-  },
+  plugins: [new MiniCssExtractPlugin({ filename: 'css/[name].css' })],
+  stats: { warnings: false, modules: false },
 };
 
 if (process.env.ANALYZE) {
@@ -95,9 +57,8 @@ if (process.env.ANALYZE) {
     mode: 'production',
   };
 } else {
-  const plugins = [devServer].concat(common.plugins);
   const entry = {
-    index: [common.entry.index, 'webpack-plugin-serve/client'],
+    index: [common.entry.index, 'blunt-livereload/dist/client'],
   };
 
   module.exports = {
@@ -105,6 +66,5 @@ if (process.env.ANALYZE) {
     mode: 'development',
     devtool: 'cheap-module-eval-source-map',
     entry,
-    plugins,
   };
 }
